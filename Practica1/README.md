@@ -105,16 +105,16 @@ void loop() {
 
 ```
 
-## Diagrama de flujo del programa
+## Diagrama de flux del programa
 
-El siguiente diagrama representa el funcionamiento del programa que enciende y apaga el LED de forma repetitiva.
+El següent diagrama representa el funcionament del programa que encén i apaga el LED de manera repetitiva.
 
 <img width="8192" height="383" alt="image" src="https://github.com/user-attachments/assets/6d5e817e-3b5b-4d03-a8b4-31584d2a9ffc" />
 ---
 
-## Diagrama de tiempos
+## Diagrama de *temps
 
-El comportamiento temporal del LED es periódico: el LED está encendido durante 500 ms y apagado durante otros 500 ms.
+El comportament temporal del LED és periòdic: el LED està encès durant 500 ms i apagada durant altres 500 ms.
 
 ```
 Tiempo (ms) →
@@ -128,7 +128,7 @@ _____|        |________________|        |________________
 OFF           500 ms
 ```
 
-Otra forma de representarlo:
+Una altra manera de representar-ho:
 
 | Tiempo (ms) | Estado del LED |
 |-------------|---------------|
@@ -145,25 +145,24 @@ T = 500 ms + 500 ms = 1000 ms (1 segundo)
 
 ---
 
-## Tiempo libre del procesador
+## Temps lliure del processador
 
-En el programa utilizado, el microcontrolador pasa la mayor parte del tiempo ejecutando la función `delay()`.
+En el programa utilitzat, el microcontrolador passa la major part del temps executant la funció `*delay()`.
 
-La función `delay(500)` bloquea el programa durante **500 milisegundos**, lo que significa que el procesador no está realizando otras tareas activas del programa durante ese tiempo.
+La funció `*delay(500)` bloqueja el programa durant **500 mil·lisegons**, cosa que significa que el processador no està fent altres tasques actives del programa durant aquest temps.
 
-En cada ciclo del `loop()` tenemos:
+En cada cicle del `*loop()` tenim:
 
-- `delay(500 ms)` con el LED encendido
-- `delay(500 ms)` con el LED apagado
+- `delay(500 ms)` amb el LED encès
+- `delay(500 ms)` amb el LED apagat
 
-Por lo tanto:
+Per tant:
 
 ```
-Tiempo total del ciclo = 1000 ms
-Tiempo en delay = 1000 ms
+Temps total del cicle = 1000 ms
+Temps en *delay = 1000 ms
 ```
 
-El procesador està **pràcticament lliure el 100% del temps**, ja que la major part del cicle està esperant dins de `delay()`, excepte uns pocs microsegons necessaris per executar instruccions com `digitalWrite()` o `Serial.println()`.
+El processador *està ***pràcticament *lliure el 100% del *temps**, *ja que la *major *part del *cicle *està *esperant *dins de `*delay()`, *excepte *uns *pocs *microsegons *necessaris *per *executar *instruccions *com `*digitalWrite()` o `Serial.*println()`.
 
-Això significa que el microcontrolador podria dedicar aquest temps a realitzar altres tasques si s’utilitzara una programació **no bloquejant** (per exemple utilitzant `millis()` en lloc de `delay()`).
-
+*Això significa que el microcontrolador *podria dedicar *aquest *temps a *realitzar *altres *tasques si s’*utilitzara una *programació **no *bloquejant** (*per *exemple *utilitzant `*millis()` en *lloc de `*delay()`).
