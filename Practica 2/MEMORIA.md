@@ -34,7 +34,7 @@ Un cop atesa la interrupció, el programa continua des del punt on s’havia atu
 ---
 ## Hardware al laboratori
 
-
+<img width="410" height="544" alt="Sin título" src="https://github.com/user-attachments/assets/9034a490-e019-484b-93df-19ba716fb6b2" />
 
 ---
 ## El nostre codi i les proves al laboratori
@@ -229,7 +229,7 @@ Desenvolupar un programa per a **ESP32 en PlatformIO** que:
 ## Hardware al laboratori
 
 
-
+<img width="595" height="619" alt="Sin título2" src="https://github.com/user-attachments/assets/51b60e50-b4c5-448c-b027-2262aa62dba1" />
 
 
 ---
