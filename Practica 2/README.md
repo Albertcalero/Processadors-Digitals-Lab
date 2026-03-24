@@ -1,7 +1,7 @@
 # Memòria de la Pràctica 2: Interrupcions
 
 
-Treball realitzat per: Albert Calero i Alex Navarra Aquesta memoria correspon a la totalitat de la practica 1
+Treball realitzat per: Albert Calero i Alex Navarra Aquesta memoria correspon a la totalitat de la practica 2
 ## Objectiu
 
 
