@@ -18,17 +18,14 @@ El objectiu d’aquesta pràctica és comprendre els **busos de comunicació**, 
 
 Els busos de comunicació serveixen per interconnectar diferents subsistemes o perifèrics d’un sistema. Per exemple, a l’ESP32 podem comunicar-nos amb sensors i pantalles mitjançant fils dedicats. Els busos poden ser **paral·lels** o **sèrie**. En un bus paral·lel es transmeten diversos bits alhora en múltiples línies, oferint alta velocitat però més interferències entre línies【9†L120-L123】. En canvi, un bus sèrie envia un bit darrere l’altre per menys cables (per exemple, només *dos* fils en I2C), fet que sovint permet distàncies majors i menys interferència【9†L120-L123】. Generalment, un bus de major freqüència de rellotge ha de limitar l’amplada de dades (més pocs bits simultanis) per reduir el *crosstalk* i problemes de sincronització. 
 
-A continuació es mostra un esquema típic d’un bus I2C, on un dispositiu **màster** es comunica amb diversos **esclaus** mitjançant només dues línies de senyal:
-
-【3†embed_image】 *Figura 1: Bus I2C amb un màster (M) i dos esclaus (E), amb línies SDA i SCL i resistències pull-up integrades【2†L179-L187】【2†L158-L162】.*  
 
 El bus **I2C (Inter-Integrated Circuit)** va ser desenvolupat per Philips el 1982【2†L152-L160】 com a bus intern per dispositius electrònics. Només requereix **dos cables**:  
 - **SCL (clock):** senyal de rellotge compartida.  
 - **SDA (data):** línia bidireccional per dades (en codi *open-drain*).  
 
-Tots els dispositius I2C han de tenir una **adreça única** (7 bits), fins a 112 dispositius normals pel bus【11†L1-L4】. El primer *byte* enviat inclou aquests 7 bits d’adreça i un bit R/W per indicar lectura o escriptura. El dispositiu màster inicia la comunicació generant el rellotge a SCL i seleccionant l’esclau per la seva adreça【2†L179-L187】【11†L1-L4】. Els esclaus únicament poden respondre quan són interrogats pel màster; no poden iniciar la transferència ells mateixos.
+Tots els dispositius I2C han de tenir una **adreça única** (7 bits), fins a 112 dispositius normals pel bus【11†L1-L4】. El primer *byte* enviat inclou aquests 7 bits d’adreça i un bit R/W per indicar lectura o escriptura. El dispositiu màster inicia la comunicació generant el rellotge a SCL i seleccionant l’esclau per la seva adreça. Els esclaus únicament poden respondre quan són interrogats pel màster; no poden iniciar la transferència ells mateixos.
 
-El protocol I2C també defineix l’ús de **resistències pull-up** a les línies. Les línies SDA i SCL es mantenen a nivell alt mitjançant pull-ups a V<sub>CC</sub> (típicament 3.3V). La llibreria `Wire` d’Arduino habilita pull-ups interns febles (~20–30 kΩ)【10†L4-L10】, però normalment es recomanen pull-ups externes de 1 kΩ–4.7 kΩ per millorar la velocitat de flanc i poder utilitzar freqüències altes o distàncies majors【10†L4-L10】. Les velocitats estàndard d’I2C són 100 kHz (estàndard) i 400 kHz (fast mode)【10†L12-L20】; existixen modes més ràpids (1–5 MHz) que no s’usen sovint en Arduino. 
+El protocol I2C també defineix l’ús de **resistències pull-up** a les línies. Les línies SDA i SCL es mantenen a nivell alt mitjançant pull-ups a V<sub>CC</sub> (típicament 3.3V). La llibreria `Wire` d’Arduino habilita pull-ups interns febles (~20–30 kΩ), però normalment es recomanen pull-ups externes de 1 kΩ–4.7 kΩ per millorar la velocitat de flanc i poder utilitzar freqüències altes o distàncies majors. Les velocitats estàndard d’I2C són 100 kHz (estàndard) i 400 kHz (fast mode); existixen modes més ràpids (1–5 MHz) que no s’usen sovint en Arduino. 
 
 En resum, les característiques del bus I2C són:  
 - **Dues línies + adreça:** Només SDA i SCL (més GND i VCC).  
@@ -41,6 +38,8 @@ En resum, les característiques del bus I2C són:
 ---
 
 ## Hardware
+
+
 
 En un ESP32 típic, els pins per defecte per a I2C són els següents:
 
@@ -104,19 +103,19 @@ void loop() {
 }
 ```
 
-**Funcionament:** Aquest codi inicialitza el bus I2C (`Wire.begin()`) i el port sèrie. A l’interior del `loop()`, s’itera de la adreça 1 fins a 126. Per cada adreça, es crida `Wire.beginTransmission(address)` i després `Wire.endTransmission()`. Si `endTransmission()` retorna 0, s’ha detectat un dispositiu amb aquell *ack*【7†L289-L297】. L’escàner escriu al port sèrie missatges com:
+**Funcionament:** Aquest codi inicialitza el bus I2C (`Wire.begin()`) i el port sèrie. A l’interior del `loop()`, s’itera de la adreça 1 fins a 126. Per cada adreça, es crida `Wire.beginTransmission(address)` i després `Wire.endTransmission()`. Si `endTransmission()` retorna 0, s’ha detectat un dispositiu amb aquell *ack*. L’escàner escriu al port sèrie missatges com:
 ```
 Scanning...
 I2C device found at address 0x3C !
 done
 ```
-indicant les adreces trobades en format hexadecimal. Si no hi ha dispositius, imprimeix `No I2C devices found`. Aquest comportament coincideix amb la idea general descrita en la documentació: “Scanner I2C recorre les adreces i mostra quins dispositius hi ha connectats”【7†L289-L297】.
+indicant les adreces trobades en format hexadecimal. Si no hi ha dispositius, imprimeix `No I2C devices found`. Aquest comportament coincideix amb la idea general descrita en la documentació: “Scanner I2C recorre les adreces i mostra quins dispositius hi ha connectats”.
 
 ---
 
 ## Pràctica B: Display OLED I2C (SSD1306)
 
-Com a exemple de dispositiu I2C extern, es pot utilitzar una pantalla OLED basada en el controlador SSD1306 (per exemple de 128×32 píxels). Aquestes pantalles es comuniquen per I2C i normalment la seva adreça és **0x3C** o **0x3D** (en hex)【11†L1-L4】. Cal connectar SDA i SCL als pins corresponents de l’ESP32 (21 i 22), i GND/VCC.
+Com a exemple de dispositiu I2C extern, es pot utilitzar una pantalla OLED basada en el controlador SSD1306 (per exemple de 128×32 píxels). Aquestes pantalles es comuniquen per I2C i normalment la seva adreça és **0x3C** o **0x3D** (en hex). Cal connectar SDA i SCL als pins corresponents de l’ESP32 (21 i 22), i GND/VCC.
 
 El codi d’exemple amb la llibreria Adafruit SSD1306 podria ser el següent:
 
@@ -159,11 +158,11 @@ void loop() {
 
 ## Resultats i Observacions
 
-- **Escàner I2C:** Al connectar un o més dispositius I2C (per exemple, la pantalla OLED SSD1306 i/o altres sensors), l’escàner imrpimeix les adreces detectades al monitor sèrie. Per exemple, si la pantalla OLED té adreça 0x3C, veurem una línia com `I2C device found at address 0x3C !`. Si s’instal·len també altres dispositius (com un sensor de temperatura I2C), també apareixeran les seves adreces. Si no hi ha dispositius o estan desconnectats, l’escàner dirà “No I2C devices found”. Aquest comportament facilita comprovar les connexions i adreces dels perifèrics (tal com descriu la bibliografia【7†L289-L297】).
+- **Escàner I2C:** Al connectar un o més dispositius I2C (per exemple, la pantalla OLED SSD1306 i/o altres sensors), l’escàner imrpimeix les adreces detectades al monitor sèrie. Per exemple, si la pantalla OLED té adreça 0x3C, veurem una línia com `I2C device found at address 0x3C !`. Si s’instal·len també altres dispositius (com un sensor de temperatura I2C), també apareixeran les seves adreces. Si no hi ha dispositius o estan desconnectats, l’escàner dirà “No I2C devices found”. Aquest comportament facilita comprovar les connexions i adreces dels perifèrics (tal com descriu la bibliografia).
 
 - **Pantalla OLED:** Una vegada inicialitzat l’I2C, el text «Hola OLED!» es veu clarament a la pantalla. Això confirma que tant el maquinari com el programari són correctes. El dispositiu respon a l’adreça 0x3C i mostra el contingut enviat.
 
-- **Sincronització i temporització:** L’ús de `Wire` s’encarrega de generar la senyal de rellotge SCL adequada i de canviar les línies SDA per fer *ack*. No cal gestionar-ho manualment. En pràctica, s’ha de tenir cura amb les resistències pull-up per assegurar flancs nets, tal com indica la referència【10†L4-L10】.
+- **Sincronització i temporització:** L’ús de `Wire` s’encarrega de generar la senyal de rellotge SCL adequada i de canviar les línies SDA per fer *ack*. No cal gestionar-ho manualment. En pràctica, s’ha de tenir cura amb les resistències pull-up per assegurar flancs nets, tal com indica la referència.
 
 ---
 
@@ -171,17 +170,17 @@ void loop() {
 
 Aquest estudi del bus I2C demostra que amb poques línies es pot comunicar múltiples dispositius de manera senzilla i eficient. Hem comprovat que:
 
-- El bus **I2C** utilitza només **dos fils** (SDA/SCL) per a comunicació bidireccional mestre–esclau【2†L158-L162】. Això redueix la complexitat de connexió comparat amb un bus paral·lel, encara que a costa de velocitats moderades【10†L12-L20】【9†L120-L123】.  
-- **Múltiples dispositius:** És possible tenir molts esclaus al mateix bus si tenen adreces diferents (fins a 112 adreces útils)【11†L1-L4】. Hem pogut connectar exemplars (pantalla, sensors) simultàniament.  
-- **Escàner I2C:** L’escàner realitzat confirma la teoria: envia una petició dummy a cada adreça i detecta resposta (“ACK”)【7†L289-L297】. Això és molt útil quan no sabem l’adreça d’un nou dispositiu.  
+- El bus **I2C** utilitza només **dos fils** (SDA/SCL) per a comunicació bidireccional mestre–esclau. Això redueix la complexitat de connexió comparat amb un bus paral·lel, encara que a costa de velocitats moderades.  
+- **Múltiples dispositius:** És possible tenir molts esclaus al mateix bus si tenen adreces diferents (fins a 112 adreces útils). Hem pogut connectar exemplars (pantalla, sensors) simultàniament.  
+- **Escàner I2C:** L’escàner realitzat confirma la teoria: envia una petició dummy a cada adreça i detecta resposta (“ACK”). Això és molt útil quan no sabem l’adreça d’un nou dispositiu.  
 - **Biblioteques i abstracció:** Les llibreries `Wire` i `Adafruit_SSD1306` amaguen la complexitat del protocol. Només cal inicialitzar el bus i invocar funcions d’alt nivell (`beginTransmission`, `display()`, etc.), i es maneja la temporització i sincronització.  
-- **Limitacions:** El bus I2C és *half-duplex* (no es pot enviar i rebre simultàniament) i la seva velocitat típica (100–400 kHz) és menor que la d’altres interfícies. Tampoc realitza checksum de dades, només ACK【10†L24-L28】. Tot i això, la seva simplicitat de cables el fa ideal per a sensors, pantalles i perifèrics interns en sistemes embeguts.  
+- **Limitacions:** El bus I2C és *half-duplex* (no es pot enviar i rebre simultàniament) i la seva velocitat típica (100–400 kHz) és menor que la d’altres interfícies. Tampoc realitza checksum de dades, només ACK. Tot i això, la seva simplicitat de cables el fa ideal per a sensors, pantalles i perifèrics interns en sistemes embeguts.  
 
 ---
 
 ## Conclusió final
 
-La Pràctica 5 ha servit per comprendre en profunditat el bus I2C i veure’l en funcionament amb l’ESP32. Hem après la diferència fonamental entre comunicació paral·lela i sèrie【9†L120-L123】 i les característiques específiques del protocol I2C (màster–esclau, adreces, pull-ups). El resultat ha estat la capacitat de realitzar un escaneig d’adreces I2C i d’interactuar amb dispositius I2C reals (com una pantalla OLED), demostrant que l’ESP32 pot gestionar perifèrics amb aquest tipus de bus de manera estable. Aquests conceptes són la base per a futures aplicacions més complexes amb múltiples sensors i perifèrics, com ara sistemes de control en xarxa o interfícies amb diversos dispositius intel·ligents.
+La Pràctica 5 ha servit per comprendre en profunditat el bus I2C i veure’l en funcionament amb l’ESP32. Hem après la diferència fonamental entre comunicació paral·lela i sèrie i les característiques específiques del protocol I2C (màster–esclau, adreces, pull-ups). El resultat ha estat la capacitat de realitzar un escaneig d’adreces I2C i d’interactuar amb dispositius I2C reals (com una pantalla OLED), demostrant que l’ESP32 pot gestionar perifèrics amb aquest tipus de bus de manera estable. Aquests conceptes són la base per a futures aplicacions més complexes amb múltiples sensors i perifèrics, com ara sistemes de control en xarxa o interfícies amb diversos dispositius intel·ligents.
 
 ---
 
