@@ -62,7 +62,9 @@ Quan una tasca fa servir vTaskDelay(), cedeix la CPU perquè altres tasques pugu
 ## Hardware
 
 
-
+![](foto1.png)
+![](foto2.png)
+![](foto3.png)
 
 
 
