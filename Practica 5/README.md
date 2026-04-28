@@ -39,7 +39,7 @@ En resum, les característiques del bus I2C són:
 
 ## Hardware
 
-
+![](foto.jpg)
 
 En un ESP32 típic, els pins per defecte per a I2C són els següents:
 
