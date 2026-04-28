@@ -1,20 +1,20 @@
-\# Memòria de la Pràctica 3: WIFI I BLUETOOTH
+# Memòria de la Pràctica 3: WIFI I BLUETOOTH
 
 Treball realitzat per: Albert Calero i Alex Navarra Aquesta memoria correspon a la totalitat de la pràctica 3\.
 
-\#\# Objectiu
+## Objectiu
 
 L’objectiu de la pràctica és comprendre el funcionament de la **\*\*comunicació WiFi\*\*** en l’ESP32 mitjançant:
 
-\- La connexió a una xarxa WiFi (mode STA)
+- La connexió a una xarxa WiFi (mode STA)
 
-\- La creació d’un **\*\*servidor web\*\***
+- La creació d’un **\*\*servidor web\*\***
 
-\- La visualització d’una pàgina web des d’un navegador
+- La visualització d’una pàgina web des d’un navegador
 
-\---
+---
 
-\#\#  Introducció teòrica
+##  Introducció teòrica
 
 WiFi i Servidor Web
 
@@ -26,23 +26,23 @@ ArduinoOTA (Over-The-Air)
 
 L'OTA és una tecnologia crítica en el món de l'IoT. Permet que el dispositiu quedi instal·lat en un lloc de difícil accés i que el programador pugui enviar noves versions del codi a través de la xarxa WiFi. El codi inclou control d'errors i visualització del progrés de càrrega.
 
-\---
+---
 
-\#\#  Pràctica A: Generació d’una pàgina web
+##  Pràctica A: Generació d’una pàgina web
 
-\#\#\#  Descripció
+###  Descripció
 
 En aquesta pràctica es configura l’ESP32 com a **\*\*client WiFi (mode STA)\*\*** i es crea un **\*\*servidor web\*\*** que respon a peticions HTTP amb una pàgina HTML senzilla.
 
-\---
+---
 
 \`\`\`cpp
 
-\#include \<Arduino.h\>
+#include \<Arduino.h\>
 
-\#include \<WiFi.h\>
+#include \<WiFi.h\>
 
-\#include \<WebServer.h\>
+#include \<WebServer.h\>
 
 // SSID & Password
 
@@ -190,9 +190,9 @@ void handle\_root()
 
 \`\`\`
 
-\---
+---
 
-\#\#\#  Funcionament del programa
+###  Funcionament del programa
 
 1\. Es defineixen les credencials de la xarxa WiFi (SSID i password).
 
@@ -200,17 +200,17 @@ void handle\_root()
 
 3\. Quan la connexió és correcta:
 
-   \- Es mostra la IP assignada pel port sèrie.
+   - Es mostra la IP assignada pel port sèrie.
 
 4\. Es crea un servidor web al port 80\.
 
 5\. Quan un usuari accedeix a la IP des d’un navegador:
 
-   \- El servidor envia una pàgina HTML.
+   - El servidor envia una pàgina HTML.
 
-\---
+---
 
-\#\#\#  Pàgina web generada
+###  Pàgina web generada
 
 La pàgina web és senzilla i conté un missatge de prova:
 
@@ -222,7 +222,7 @@ La pàgina web és senzilla i conté un missatge de prova:
 
 \<body\>
 
-\<h1\>My Primera Pagina con ESP32 \- Station Mode 😊\</h1\>
+\<h1\>My Primera Pagina con ESP32 - Station Mode 😊\</h1\>
 
 \</body\>
 
@@ -230,19 +230,19 @@ La pàgina web és senzilla i conté un missatge de prova:
 
 \`\`\`
 
-\---
+---
 
-\#\# Part B: Implementació de Manteniment OTA
+## Part B: Implementació de Manteniment OTA
 
 Aquest segon codi permet que el dispositiu estigui "escoltant" noves actualitzacions de firmware. És una eina de diagnòstic i millora que complementa qualsevol projecte WiFi
 
-\#\#\# Software
+### Software
 
 \`\`\`cpp
 
-\#include \<WiFi.h\>
+#include \<WiFi.h\>
 
-\#include \<ArduinoOTA.h\>
+#include \<ArduinoOTA.h\>
 
 const char\* ssid \= "Nautilus";
 
@@ -330,11 +330,11 @@ void loop()
 
 \`\`\`
 
-\---
+---
 
-\#\# Resultats
+## Resultats
 
-\- Servidor Web
+- Servidor Web
 
 Un cop connectat a la xarxa "Nautilus", l'ESP32 imprimeix la seva IP (per exemple 192.168.1.45). En accedir des del navegador, es carrega el bloc HTML amb estils CSS.
 
@@ -348,9 +348,9 @@ A l'IDE d'Arduino o PlatformIO, el dispositiu apareix a la llista de "Ports" com
 
 S'ha verificat que es pot carregar codi nou sense connectar el cable físic.
 
-\---
+---
 
-\#\# Conclusions
+## Conclusions
 
 Aquesta pràctica demostra que el WiFi en l'ESP32 no serveix només per enviar dades a un servidor extern, sinó per convertir el propi microcontrolador en una interfície d'usuari interactiva i en un sistema autònom capaç d'actualitzar-se a distància.
 
